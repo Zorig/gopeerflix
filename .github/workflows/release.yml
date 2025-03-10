@@ -1,0 +1,58 @@
+name: Build & Release GoPeerFlix
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    name: Build Executables
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+
+      - name: Build Linux
+        run: GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o gopeerflix-linux ./cmd
+
+      - name: Build macOS
+        run: GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o gopeerflix-mac ./cmd
+
+      - name: Build Windows
+        run: GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o gopeerflix-windows.exe ./cmd
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: gopeerflix-binaries
+          path: |
+            gopeerflix-linux
+            gopeerflix-mac
+            gopeerflix-windows.exe
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: gopeerflix-binaries
+          path: .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
+        with:
+          files: |
+            gopeerflix-linux
+            gopeerflix-mac
+            gopeerflix-windows.exe

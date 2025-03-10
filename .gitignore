@@ -1,0 +1,8 @@
+/bin/
+/gopeerflix
+/gopeerflix-*
+*.exe
+*.out
+.DS_Store
+
+/pkg/mod
