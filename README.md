@@ -16,7 +16,7 @@
 - 🔄 **Auto Updates:** Automatically checks and updates itself.
 - 🛠️ **Cross-Platform:** Supports Windows, Linux, and macOS.
 - 🌎 **Magnet & Torrent Support:** Stream from magnet links or `.torrent` files.
-- 📈 **Real-time TUI:** Interactive terminal UI showing real-time progress, speed, and ETA.
+- 📈 *Real-time TUI:* **Planned to implement** Interactive terminal UI showing real-time progress, speed, and ETA.
 
 ---
 
