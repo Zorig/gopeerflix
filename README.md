@@ -13,10 +13,13 @@
 - 🚀 **Blazing Fast:** Stream torrents instantly—no need to wait for full downloads!
 - 🦋 **Lightweight & Efficient:** Minimal memory usage and optimized chunk streaming.
 - 📺 **VLC Ready:** Seamlessly integrates with VLC media player.
-- 🔄 **Auto Updates:** Automatically checks and updates itself.
 - 🛠️ **Cross-Platform:** Supports Windows, Linux, and macOS.
 - 🌎 **Magnet & Torrent Support:** Stream from magnet links or `.torrent` files.
-- 📈 *Real-time TUI:* **Planned to implement** Interactive terminal UI showing real-time progress, speed, and ETA.
+
+## Planning to implement
+
+- 🔄 **Auto Updates:** Automatically checks and updates itself.
+- 📈 **Real-time TUI:** Interactive terminal UI showing real-time progress, speed, and ETA.
 
 ---
 
