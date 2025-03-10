@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 1.23
+          cache: true
 
       - name: Build Linux
         run: GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o gopeerflix-linux ./cmd
