@@ -1,6 +1,6 @@
 # 🚀 GoPeerflix
 
-> **The Lightweight, High-Performance Torrent Streaming CLI for VLC**
+> **The Lightweight, High-Performance Torrent Streaming CLI for VLC and IINA**
 
 [![GitHub Release](https://img.shields.io/github/v/release/zorig/gopeerflix)](https://github.com/zorig/gopeerflix/releases)
 [![Build Status](https://github.com/zorig/gopeerflix/actions/workflows/release.yml/badge.svg)](https://github.com/zorig/gopeerflix/actions)
@@ -12,7 +12,7 @@
 
 - 🚀 **Blazing Fast:** Stream torrents instantly—no need to wait for full downloads!
 - 🦋 **Lightweight & Efficient:** Minimal memory usage and optimized chunk streaming.
-- 📺 **VLC Ready:** Seamlessly integrates with VLC media player.
+- 📺 **Media Player Ready:** Seamlessly integrates with VLC and IINA players.
 - 🛠️ **Cross-Platform:** Supports Windows, Linux, and macOS.
 - 🌎 **Magnet & Torrent Support:** Stream from magnet links or `.torrent` files.
 
@@ -43,6 +43,8 @@ go build -o gopeerflix ./cmd
 
 ```sh
 ./gopeerflix [magnet-link | torrent-file] --vlc
+# or
+./gopeerflix [magnet-link | torrent-file] --iina
 ```
 
 ### 🎬 Example
@@ -51,12 +53,16 @@ Stream from a magnet link:
 
 ```sh
 ./gopeerflix "magnet:?xt=urn:btih:yourmagnetlinkhere" --vlc
+# or
+./gopeerflix "magnet:?xt=urn:btih:yourmagnetlinkhere" --iina
 ```
 
 Or stream from a local torrent file:
 
 ```sh
 ./gopeerflix ./myvideo.torrent --vlc
+# or
+./gopeerflix ./myvideo.torrent --iina
 ```
 
 ---
@@ -81,6 +87,16 @@ brew install vlc
   [Download VLC](https://www.videolan.org/vlc/download-windows.html)
 
 GoPeerflix automatically opens VLC for instant streaming.
+
+### 🍿 IINA Integration (macOS)
+
+Install IINA via Homebrew:
+
+```sh
+brew install --cask iina
+```
+
+Launch IINA automatically with the `--iina` flag when streaming on macOS.
 
 ### ⚡ Performance Optimizations
 

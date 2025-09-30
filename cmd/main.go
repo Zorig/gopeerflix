@@ -16,13 +16,19 @@ import (
 func main() {
 	var input string
 	var useVLC bool
+	var useIINA bool
 
 	rootCmd := &cobra.Command{
 		Use:   "gopeerflix [magnet-uri | .torrent file]",
-		Short: "Stream torrents directly to VLC",
+		Short: "Stream torrents directly to VLC or IINA",
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			input = args[0]
+
+			if useVLC && useIINA {
+				fmt.Println("Error: --vlc and --iina cannot be used together.")
+				os.Exit(1)
+			}
 			fmt.Println("Fetching metadata...")
 
 			torrentClient := torrent.NewClient()
@@ -34,9 +40,21 @@ func main() {
 
 			go streamer.StartServer(torFile)
 
-			if useVLC {
+			if useVLC || useIINA {
 				streamURL := "http://localhost:" + streamer.Port + "/stream"
-				player.PlayVLC(streamURL)
+				var err error
+				if useVLC {
+					fmt.Println("Launching VLC...")
+					err = player.PlayVLC(streamURL)
+				} else {
+					fmt.Println("Launching IINA...")
+					err = player.PlayIINA(streamURL)
+				}
+				if err != nil {
+					fmt.Println("Player launch failed:", err)
+				} else {
+					fmt.Println("Player launched successfully!")
+				}
 			}
 
 			sigChan := make(chan os.Signal, 1)
@@ -48,5 +66,6 @@ func main() {
 	}
 
 	rootCmd.Flags().BoolVarP(&useVLC, "vlc", "v", false, "Play in VLC")
+	rootCmd.Flags().BoolVar(&useIINA, "iina", false, "Play in IINA (macOS only)")
 	rootCmd.Execute()
 }
