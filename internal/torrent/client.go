@@ -15,7 +15,7 @@ type TorrentClient struct {
 func NewClient() *TorrentClient {
 	cfg := torrent.NewDefaultClientConfig()
 	cfg.Seed = false
-	cfg.NoDHT = true
+	cfg.NoDHT = false
 	cfg.DisableIPv6 = true
 	cfg.DataDir = "/tmp/gopeerflix"
 
@@ -58,6 +58,9 @@ func (t *TorrentClient) Stream(input string) (*torrent.Torrent, *torrent.File, e
 		return nil, nil, fmt.Errorf("No video file found in torrent")
 	}
 
+	// Download all pieces in the background (rarest-first). The streaming
+	// reader in the HTTP server raises the sequential playback window to
+	// Now/Readahead priority, so it downloads in order ahead of everything else.
 	selectedFile.Download()
 	return tor, selectedFile, nil
 }

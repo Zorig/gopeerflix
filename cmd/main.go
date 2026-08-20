@@ -1,22 +1,26 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/spf13/cobra"
 
 	"gopeerflix/internal/player"
 	"gopeerflix/internal/streamer"
 	"gopeerflix/internal/torrent"
+	"gopeerflix/internal/ui"
 )
 
 func main() {
 	var input string
 	var useVLC bool
 	var useIINA bool
+	var noProgress bool
 
 	rootCmd := &cobra.Command{
 		Use:   "gopeerflix [magnet-uri | .torrent file]",
@@ -38,10 +42,14 @@ func main() {
 				os.Exit(1)
 			}
 
-			go streamer.StartServer(torFile)
+			srv, err := streamer.StartServer(torFile)
+			if err != nil {
+				fmt.Println("Error:", err)
+				os.Exit(1)
+			}
 
 			if useVLC || useIINA {
-				streamURL := "http://localhost:" + streamer.Port + "/stream"
+				streamURL := srv.URL()
 				var err error
 				if useVLC {
 					fmt.Println("Launching VLC...")
@@ -57,15 +65,24 @@ func main() {
 				}
 			}
 
+			progress := ui.NewTorrent(tor, torFile, !noProgress)
+			progress.Start()
+			defer progress.Stop()
+
 			sigChan := make(chan os.Signal, 1)
 			signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 			<-sigChan
+			progress.Stop()
 			fmt.Println("Shutting down...")
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			srv.Shutdown(ctx)
 			tor.Drop()
 		},
 	}
 
 	rootCmd.Flags().BoolVarP(&useVLC, "vlc", "v", false, "Play in VLC")
 	rootCmd.Flags().BoolVar(&useIINA, "iina", false, "Play in IINA (macOS only)")
+	rootCmd.Flags().BoolVar(&noProgress, "no-progress", false, "Disable the real-time progress display")
 	rootCmd.Execute()
 }
