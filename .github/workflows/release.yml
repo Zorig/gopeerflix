@@ -5,6 +5,9 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Executables
@@ -40,16 +43,11 @@ jobs:
       - name: Build
         run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 go build -ldflags="-s -w" -o ${{ matrix.name }} ./cmd
 
-      - name: Upload binaries
+      - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: gopeerflix-binaries
-          path: |
-            gopeerflix-linux-amd64
-            gopeerflix-linux-arm64
-            gopeerflix-macos-amd64
-            gopeerflix-macos-arm64
-            gopeerflix-windows.exe
+          name: ${{ matrix.name }}
+          path: ${{ matrix.name }}
 
   release:
     name: Create Release
@@ -59,13 +57,12 @@ jobs:
       - name: Download binaries
         uses: actions/download-artifact@v4
         with:
-          name: gopeerflix-binaries
+          pattern: gopeerflix-*
           path: .
+          merge-multiple: true
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
         with:
           files: |
             gopeerflix-linux-amd64
