@@ -9,6 +9,24 @@ jobs:
   build:
     name: Build Executables
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            name: gopeerflix-linux-amd64
+          - goos: linux
+            goarch: arm64
+            name: gopeerflix-linux-arm64
+          - goos: darwin
+            goarch: amd64
+            name: gopeerflix-macos-amd64
+          - goos: darwin
+            goarch: arm64
+            name: gopeerflix-macos-arm64
+          - goos: windows
+            goarch: amd64
+            name: gopeerflix-windows.exe
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -19,22 +37,18 @@ jobs:
           go-version: 1.23
           cache: true
 
-      - name: Build Linux
-        run: GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o gopeerflix-linux ./cmd
-
-      - name: Build macOS
-        run: GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o gopeerflix-mac ./cmd
-
-      - name: Build Windows
-        run: GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o gopeerflix-windows.exe ./cmd
+      - name: Build
+        run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 go build -ldflags="-s -w" -o ${{ matrix.name }} ./cmd
 
       - name: Upload binaries
         uses: actions/upload-artifact@v4
         with:
           name: gopeerflix-binaries
           path: |
-            gopeerflix-linux
-            gopeerflix-mac
+            gopeerflix-linux-amd64
+            gopeerflix-linux-arm64
+            gopeerflix-macos-amd64
+            gopeerflix-macos-arm64
             gopeerflix-windows.exe
 
   release:
@@ -54,6 +68,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
         with:
           files: |
-            gopeerflix-linux
-            gopeerflix-mac
+            gopeerflix-linux-amd64
+            gopeerflix-linux-arm64
+            gopeerflix-macos-amd64
+            gopeerflix-macos-arm64
             gopeerflix-windows.exe
