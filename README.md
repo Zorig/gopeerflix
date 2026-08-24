@@ -25,6 +25,16 @@
 
 ## 📦 Installation
 
+### 🍺 Homebrew (macOS and Linux)
+
+Install GoPeerflix from the official tap:
+
+```sh
+brew install zorig/tap/gopeerflix
+```
+
+After installation, run `gopeerflix` from anywhere in your terminal.
+
 ### 📥 Download Pre-Built Binaries
 
 Visit the [Releases](https://github.com/zorig/gopeerflix/releases) page to download binaries for Linux, Windows, or macOS.
@@ -42,27 +52,29 @@ go build -o gopeerflix ./cmd
 ## 🚩 Usage
 
 ```sh
-./gopeerflix [magnet-link | torrent-file] --vlc
+gopeerflix [magnet-link | torrent-file] --vlc
 # or
-./gopeerflix [magnet-link | torrent-file] --iina
+gopeerflix [magnet-link | torrent-file] --iina
 ```
+
+If you downloaded or built the binary locally, use `./gopeerflix` instead.
 
 ### 🎬 Example
 
 Stream from a magnet link:
 
 ```sh
-./gopeerflix "magnet:?xt=urn:btih:yourmagnetlinkhere" --vlc
+gopeerflix "magnet:?xt=urn:btih:yourmagnetlinkhere" --vlc
 # or
-./gopeerflix "magnet:?xt=urn:btih:yourmagnetlinkhere" --iina
+gopeerflix "magnet:?xt=urn:btih:yourmagnetlinkhere" --iina
 ```
 
 Or stream from a local torrent file:
 
 ```sh
-./gopeerflix ./myvideo.torrent --vlc
+gopeerflix ./myvideo.torrent --vlc
 # or
-./gopeerflix ./myvideo.torrent --iina
+gopeerflix ./myvideo.torrent --iina
 ```
 
 ---
